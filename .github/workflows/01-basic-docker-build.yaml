@@ -17,6 +17,10 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 #NEW: (END) ############################################################
+#NEW: (START) ##########################################################
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+#NEW: (END) ############################################################
             
       - name: Login to Docker Hub
         uses: docker/login-action@v3
@@ -32,5 +36,8 @@ jobs:
 #NEW: (START) ##########################################################
           cache-from: type=gha
           cache-to: type=gha,mode=max
+#NEW: (END) ############################################################
+#NEW: (START) ##########################################################
+          platforms: linux/amd64,linux/arm64,linux/arm/v7
 #NEW: (END) ############################################################
 
