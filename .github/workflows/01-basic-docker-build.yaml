@@ -27,12 +27,31 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
+#NEW: (START) ##########################################################
+      - name: Docker meta
+        id: docker_meta
+        uses: docker/metadata-action@v5
+        with:
+          images: predraggavrilovic/httpenv
+          flavor: |
+            latest=false
+          tags: |
+            type=raw,value=04
+            type=raw,value=latest,enable=${{ endsWith(github.ref, github.event.repository.default_branch) }}
+            type=ref,event=pr
+            type=ref,event=branch
+            type=semver,pattern={{version}}
+#NEW: (END) ############################################################
+
       
       - name: Docker build
         uses: docker/build-push-action@v5
         with:
-          push: ${{ github.event_name != 'pull_request' }}
-          tags: predraggavrilovic/httpenv:latest,predraggavrilovic/httpenv:01
+#NEW: (START) ##########################################################
+          push: true
+          tags: ${{ steps.docker_meta.outputs.tags }}
+          labels: ${{ steps.docker_meta.outputs.labels }}
+#NEW: (END) ############################################################
 #NEW: (START) ##########################################################
           cache-from: type=gha
           cache-to: type=gha,mode=max
